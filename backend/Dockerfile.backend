@@ -2,6 +2,9 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
+# 明示的に /app を PYTHONPATH に追加
+ENV PYTHONPATH=/app
+
 # ルート requirements を使用（FastAPI + Uvicorn などを含む）
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
