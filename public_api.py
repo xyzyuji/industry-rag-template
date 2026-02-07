@@ -12,7 +12,10 @@ from public.answer_interface import answer
 from public.simple_retrieve_fn import simple_retrieve_fn
 from public.evaluate_core import check_must_include, check_hallucination
 
-app = FastAPI()
+app = FastAPI(
+    title="RAG Evaluation Template (Public API)",
+    description="Hackathon Public Edition のデモ API",
+)
 
 
 class AnswerRequest(BaseModel):
@@ -23,6 +26,21 @@ class AnswerRequest(BaseModel):
 class EvaluateRequest(BaseModel):
     question: str
     must_include: list[str]
+
+
+@app.get("/")
+def root():
+    return {
+        "name": "rag-public-api",
+        "message": "RAG Evaluation Template (Public Edition)",
+        "endpoints": ["/answer", "/evaluate", "/health"],
+        "docs": "/docs",
+    }
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 
 @app.post("/answer")
