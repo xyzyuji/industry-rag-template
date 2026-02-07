@@ -8,9 +8,10 @@ Hackathon Public Edition: 評価デモ用 API
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from answer_interface import answer
-from simple_retrieve_fn import simple_retrieve_fn
-from evaluate_public import check_must_include, check_hallucination
+from public.answer_interface import answer
+from public.simple_retrieve_fn import simple_retrieve_fn
+from public.evaluate_public import check_must_include, check_hallucination
+
 
 app = FastAPI(
     title="RAG Evaluation Template (Public API)",
