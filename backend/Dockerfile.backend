@@ -2,10 +2,15 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+# ルート requirements を使用（FastAPI + Uvicorn などを含む）
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+# backend 配下のAPIコード
+COPY backend/public_api.py ./public_api.py
+
+# public モジュール（評価ロジック・インターフェース類）
+COPY public ./public
 
 # ★ Cloud Run は必ず $PORT を使う
 ENV PORT=8080
