@@ -12,8 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # backend 配下のAPIコード
 COPY backend/public_api.py ./public_api.py
 
-# public モジュール（評価ロジック・インターフェース類）
-COPY public ./public
+# 必要な public モジュールのみルートにコピー
+COPY public/answer_interface.py ./answer_interface.py
+COPY public/simple_retrieve_fn.py ./simple_retrieve_fn.py
+COPY public/evaluate_public.py ./evaluate_public.py
 
 # ★ Cloud Run は必ず $PORT を使う
 ENV PORT=8080
