@@ -20,5 +20,6 @@ COPY public/evaluate_public.py ./evaluate_public.py
 # ★ Cloud Run は必ず $PORT を使う
 ENV PORT=8080
 EXPOSE 8080
+ENV PYTHONPATH=/app
 
 CMD ["sh", "-c", "uvicorn public_api:app --host 0.0.0.0 --port $PORT"]
