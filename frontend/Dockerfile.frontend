@@ -1,0 +1,11 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Cloud Run は必ず $PORT を使う
+CMD ["streamlit", "run", "ui_demo.py", "--server.port=${PORT}", "--server.address=0.0.0.0"]
