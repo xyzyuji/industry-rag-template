@@ -1,8 +1,8 @@
 import streamlit as st
 import requests
 
-# ★ここは実際のCloud Run APIのURLに置き換えてください
-API_URL = "https://industry-rag-api-xxxxxxxx.a.run.app"
+# ★ここは実際のCloud Run APIのURLに置き換え
+API_URL = "https://industry-rag-template-api-873508214410.asia-northeast1.run.app"
 
 st.title("Industry RAG Demo")
 
