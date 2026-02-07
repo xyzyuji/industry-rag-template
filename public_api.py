@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from public.answer_interface import answer
 from public.simple_retrieve_fn import simple_retrieve_fn
-from public.evaluate_core import check_must_include, check_hallucination
+from public.evaluate_public import check_must_include, check_hallucination
 
 app = FastAPI(
     title="RAG Evaluation Template (Public API)",
