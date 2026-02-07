@@ -7,5 +7,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Cloud Run は必ず $PORT を使う
-CMD ["streamlit", "run", "ui_demo.py", "--server.port=${PORT}", "--server.address=0.0.0.0"]
+# ★ Cloud Run は 8080 を使う
+ENV PORT=8080
+EXPOSE 8080
+
+CMD ["sh", "-c", "streamlit run public/ui_demo.py \
+  --server.port=$PORT \
+  --server.address=0.0.0.0 \
+  --server.enableCORS=false \
+  --server.enableXsrfProtection=false"]
