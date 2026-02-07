@@ -1,7 +1,8 @@
 """
-ハッカソン提出用：RAG評価デモの簡易UI（Streamlit版）
-- 質問入力→answer_interface.py呼び出し→結果表示のみ
-- 詳細ロジック・本番UIは非公開
+Hackathon Public Edition: ローカル評価デモUI
+
+- FastAPI を使わず、純粋にローカル関数を呼ぶ
+- API版（public_api.py）とは別系統のデモ
 """
 
 import streamlit as st

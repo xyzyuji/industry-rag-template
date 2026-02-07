@@ -70,6 +70,22 @@ gcloud run deploy rag-public \
 
 ---
 
+## 🧪 Public Edition の位置づけ（重要）
+
+本リポジトリの Public Edition は：
+
+- RAG の「評価・運用思想」を伝えることが主目的
+- 実装はあえて“簡易スタブ”
+- 本番用の検索・埋め込み・評価ロジックは非公開（private版で管理）
+
+ローカルデモ：
+- `public/local_ui_demo.py`
+
+APIデモ：
+- `public_api.py`（FastAPI）
+
+---
+
 ## 📁 リポジトリ構成
 
 ```
@@ -80,14 +96,18 @@ docs/
 public/
 	├── answer_interface.py    # RAG の API インターフェース（外形のみ公開）
 	├── ingest_interface.py    # データ登録 API（外形のみ公開）
-	└── evaluate_public.py     # 評価デモ用の簡易スクリプト
+	├── local_ui_demo.py       # ローカル評価デモUI
+	├── evaluate_core.py       # 評価ロジック（本質）
+	└── evaluate_cli.py        # CLI 実行用ラッパー
+
+public_api.py               # FastAPI（評価デモ用API）
 ```
 
 ---
 
 ## 🚀 使い方
 
-1. `public/evaluate_public.py` を実行
+1. `public/evaluate_cli.py` を実行
 2. サンプル設問（`qid, type, must_include, ideal_answer`）に対し `answer()` を呼び出し
 3. 以下を含む評価結果を JSON で出力：
 
