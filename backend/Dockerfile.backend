@@ -1,21 +1,17 @@
 FROM python:3.10-slim
 
 WORKDIR /app
+ENV PYTHONPATH=/app
 
-# この Dockerfile は「backend/」がルートになる前提
-# なので PYTHONPATH は 1つ上も含める
-ENV PYTHONPATH=/app:/app/..
-
-# requirements は「backend/requirements.txt」
+# ルートの requirements を使う（推奨）
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ★ 修正ポイント①：パスを修正（もう backend/ は付けない）
-COPY public_api.py ./public_api.py
+# ★ API本体（backend から）
+COPY backend/public_api.py ./public_api.py
 
-# ★ 修正ポイント②：ルートの public を持ってくる
-# → これは 1つ上の階層からコピーする
-COPY ../public ./public
+# ★ public フォルダを“そのまま”コピー（← これが効く）
+COPY public ./public
 
 ENV PORT=8080
 EXPOSE 8080
