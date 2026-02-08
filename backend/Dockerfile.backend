@@ -2,20 +2,22 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# ★ これを確実に効かせる
-ENV PYTHONPATH=/app
+# この Dockerfile は「backend/」がルートになる前提
+# なので PYTHONPATH は 1つ上も含める
+ENV PYTHONPATH=/app:/app/..
 
+# requirements は「backend/requirements.txt」
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# backend の API
-COPY backend/public_api.py ./public_api.py
+# ★ 修正ポイント①：パスを修正（もう backend/ は付けない）
+COPY public_api.py ./public_api.py
 
-# ルートの public をコピー（あなたの方針のまま）
-COPY public/ ./public/
+# ★ 修正ポイント②：ルートの public を持ってくる
+# → これは 1つ上の階層からコピーする
+COPY ../public ./public
 
 ENV PORT=8080
 EXPOSE 8080
 
-# ★ 起動方法を少しだけ変える（重要）
-CMD ["sh", "-c", "python -c \"import sys; print(sys.path)\" && uvicorn public_api:app --host 0.0.0.0 --port $PORT"]
+CMD ["sh", "-c", "uvicorn public_api:app --host 0.0.0.0 --port $PORT"]
