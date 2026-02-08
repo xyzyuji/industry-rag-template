@@ -2,21 +2,20 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# 明示的に /app を PYTHONPATH に追加
+# ★ これを確実に効かせる
 ENV PYTHONPATH=/app
 
-# ルート requirements を使用（FastAPI + Uvicorn などを含む）
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# backend 配下のAPIコード
+# backend の API
 COPY backend/public_api.py ./public_api.py
 
+# ルートの public をコピー（あなたの方針のまま）
 COPY public/ ./public/
 
-# ★ Cloud Run は必ず $PORT を使う
 ENV PORT=8080
 EXPOSE 8080
-ENV PYTHONPATH=/app
 
-CMD ["sh", "-c", "uvicorn public_api:app --host 0.0.0.0 --port $PORT"]
+# ★ 起動方法を少しだけ変える（重要）
+CMD ["sh", "-c", "python -c \"import sys; print(sys.path)\" && uvicorn public_api:app --host 0.0.0.0 --port $PORT"]
