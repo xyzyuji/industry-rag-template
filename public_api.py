@@ -52,9 +52,10 @@ def answer_api(req: AnswerRequest):
 @app.post("/evaluate")
 def evaluate_api(req: EvaluateRequest):
     res = answer(req.question, simple_retrieve_fn, 5)
+    must_include_result = check_must_include(res["answer"], req.must_include)
+    hallucination = check_hallucination(res["answer"], res["docs"])
     return {
         "generated": res["answer"],
-        "must_include_ok": check_must_include(res["answer"], req.must_include),
-        # Public版として「docsが空ならhallucination扱い」という簡易ルールに統一
-        "hallucination": len(res["docs"]) == 0,
+        "must_include": must_include_result,
+        "hallucination": hallucination,
     }

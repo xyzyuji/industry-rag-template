@@ -118,6 +118,71 @@ public_api.py               # FastAPI（評価デモ用API）
 
 ---
 
+## 🧪 Cloud Run デモフロー（/answer → /evaluate）
+
+本テンプレートでは、RAG の回答生成だけでなく、**回答を機械的に評価するところまで**を一連のフローとしてデモできます。
+
+1. 質問 → 回答生成（/answer）
+
+	 ```http
+	 POST /answer
+	 Content-Type: application/json
+
+	 {
+		 "question": "RAGとは何ですか？",
+		 "k": 3
+	 }
+	 ```
+
+	 レスポンス例：
+
+	 ```json
+	 {
+		 "answer": "RAG（Retrieval-Augmented Generation）は、外部知識を検索してから回答を生成する手法です。",
+		 "docs": [
+			 {"id": "doc_1", "text": "RAGは外部知識を検索して活用する..."}
+		 ],
+		 "metrics": {"status": "ok"}
+	 }
+	 ```
+
+2. 回答 → 品質評価（/evaluate）
+
+	 ```http
+	 POST /evaluate
+	 Content-Type: application/json
+
+	 {
+		 "question": "RAGとは何ですか？",
+		 "must_include": ["外部知識", "検索"]
+	 }
+	 ```
+
+	 レスポンス例：
+
+	 ```json
+	 {
+		 "generated": "RAG（Retrieval-Augmented Generation）は、外部知識を検索してから回答を生成する手法です。",
+		 "must_include": {
+			 "all_ok": true,
+			 "detail": {
+				 "外部知識": true,
+				 "検索": true
+			 }
+		 },
+		 "hallucination": false
+	 }
+	 ```
+
+このように、
+
+- `/answer` : RAG による回答生成
+- `/evaluate` : その回答に対する **必須キーワード（must_include）** と **hallucination の簡易判定**
+
+までを API として分離しつつ、評価・運用の流れをデモできる構成になっています。
+
+---
+
 ## 🔐 公開方針・注意
 
 * ベクトルストア（Chroma 等）の設計・パラメータ・運用ノウハウは資産のため**非公開**

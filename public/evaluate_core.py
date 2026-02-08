@@ -34,14 +34,23 @@ def answer(query: str):
 # ====== 評価ロジック（簡易）=====
 # ==============================
 
-def check_must_include(generated: str, must_include: list) -> bool:
-    """must_include の全語が含まれているか（簡易版）"""
-    return all(k in generated for k in must_include)
+def check_must_include(generated: str, must_include: list) -> dict:
+    """must_include の各語が含まれているかを詳細に判定"""
+    detail = {kw: (kw in generated) for kw in must_include}
+    return {"all_ok": all(detail.values()), "detail": detail}
 
 
-def check_hallucination(sources: list) -> bool:
-    """出典が空なら hallucination とみなす（簡易版）"""
-    return len(sources) == 0
+def check_hallucination(generated: str, sources: list) -> bool:
+    """出典と回答内容から簡易的に hallucination を判定"""
+    # 出典が空なら要注意
+    if len(sources) == 0:
+        return True
+
+    # 回答が極端に短い場合も要注意
+    if len(generated) < 10:
+        return True
+
+    return False
 
 
 def dummy_similarity(generated: str, ideal: str) -> float:
@@ -85,12 +94,12 @@ questions = [
 def evaluate_one(question: str, must_include: list, ideal_answer: str):
     res = answer(question)
 
-    must_include_ok = check_must_include(res["generated"], must_include)
-    hallucination = check_hallucination(res["sources"])
+    must_include_result = check_must_include(res["generated"], must_include)
+    hallucination = check_hallucination(res["generated"], res["sources"])
     similarity = dummy_similarity(res["generated"], ideal_answer)
 
     failure_tags = []
-    if not must_include_ok:
+    if not must_include_result["all_ok"]:
         failure_tags.append("missing_must_include")
     if hallucination:
         failure_tags.append("hallucination")
@@ -98,7 +107,7 @@ def evaluate_one(question: str, must_include: list, ideal_answer: str):
     suggested_action = "要調査" if failure_tags else "OK"
 
     return {
-        "must_include_ok": must_include_ok,
+        "must_include": must_include_result,
         "hallucination": hallucination,
         "similarity": similarity,
         "failure_tags": failure_tags,
