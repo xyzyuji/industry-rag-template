@@ -183,6 +183,93 @@ public_api.py               # FastAPI（評価デモ用API）
 
 ---
 
+## 🧪 Evaluation Scenarios（評価パターン集）
+
+評価APIがどのように振る舞うかを示すために、代表的なパターンをいくつか挙げます。
+
+### Case 1: 正しい回答（理想ケース）
+
+「RAGが正しく機能すると、こう評価される」ケースです。
+
+```json
+{
+	"generated": "RAGは検索（Retrieval）で外部知識を取得し、それを基にLLMが回答する手法です。",
+	"must_include": {
+		"all_ok": true,
+		"detail": {"検索": true, "外部知識": true}
+	},
+	"hallucination": false
+}
+```
+
+### Case 2: 明確に間違った回答（NGケース）
+
+「評価APIが“ダメな回答”を検知できる」ケースです。
+
+```json
+{
+	"generated": "RAGは画像生成モデルの一種です。",
+	"must_include": {
+		"all_ok": false,
+		"detail": {"検索": false, "外部知識": false}
+	},
+	"hallucination": true
+}
+```
+
+### Case 3: 検索はダメだが回答は正しい（人間判断が必要なケース）
+
+検索結果（docs）が空で hallucination=true だが、回答自体は一般的に正しいケースです。
+
+```json
+{
+	"generated": "RAGは検索で外部知識を取得し、それを基に回答を生成する仕組みです。",
+	"must_include": {
+		"all_ok": false,
+		"detail": {"検索": false, "外部知識": false}
+	},
+	"hallucination": true
+}
+```
+
+このようなケースでは、**評価は自動化できても、最終判断には人間のレビューが必要**になります。
+
+### Case 4: 一部だけ満たしているケース（部分OK）
+
+「評価は二値（OK/NG）だけでなく、粒度を持っている」ことを示すケースです。
+
+```json
+{
+	"generated": "RAGは検索を活用する手法です。",
+	"must_include": {
+		"all_ok": false,
+		"detail": {"検索": true, "外部知識": false}
+	},
+	"hallucination": false
+}
+```
+
+必須キーワードの一部のみを満たす場合でも、`detail` により「どこが不足しているか」を確認できます。
+
+### Case 5: 長くてそれっぽいが怪しい回答（微妙ケース）
+
+「単に“長い回答＝良い回答”ではない」ことを示すケースです。
+
+```json
+{
+	"generated": "RAGは多様な文書を横断的に参照し、ユーザーのニーズに応じた柔軟な回答を返す画期的な仕組みであり、クラウドやオンプレミスなど様々な環境に展開可能で…（以下略）",
+	"must_include": {
+		"all_ok": true,
+		"detail": {"検索": true, "外部知識": true}
+	},
+	"hallucination": true
+}
+```
+
+キーワード的には条件を満たしていても、回答の質や出典状況によっては `hallucination=true` となり得る、という例です。
+
+---
+
 ## 🔐 公開方針・注意
 
 * ベクトルストア（Chroma 等）の設計・パラメータ・運用ノウハウは資産のため**非公開**
