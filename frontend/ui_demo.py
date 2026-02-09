@@ -5,6 +5,7 @@ import requests
 API_URL = "https://industry-rag-template-api-873508214410.asia-northeast1.run.app"
 
 st.title("Industry RAG Demo")
+st.title("🔥 Industry RAG Demo (DEPLOY TEST 2026-02-09)")
 
 # --- サンプル入力プリセット（Evaluation Scenarios） ---
 if "question_input" not in st.session_state:
