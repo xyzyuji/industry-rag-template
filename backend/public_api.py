@@ -15,7 +15,7 @@ from public.evaluate_public import check_must_include, check_hallucination
 
 app = FastAPI(
     title="RAG Evaluation Template (Public API)",
-    description="Hackathon Public Edition のデモ API",
+    description="Hackathon Public Edition のデモ API (DEPLOY 2026-02-09)",
 )
 
 
