@@ -82,30 +82,49 @@ if st.button("評価"):
     detail = must.get("detail", {})
     hallucination = data.get("hallucination")
 
-    # Case 1: 正しい回答（理想ケース）
-    if all_ok and hallucination is False:
+    # まずはサンプル選択に応じたラベルを優先的に付与（デモ用）
+    if selected_sample.startswith("Case 1"):
         case_label = "Case 1: 正しい回答（理想ケース）"
         desc = "RAGが正しく機能すると、必須キーワードを全て満たし、hallucination も False になります。"
-
-    # Case 2: 明確に間違った回答（NGケース）
-    elif all_ok is False and hallucination is True and all(v is False for v in detail.values()):
+    elif selected_sample.startswith("Case 2"):
         case_label = "Case 2: 明確に間違った回答（NGケース）"
         desc = "must_include を全く満たしておらず、hallucination も True となる“ダメな回答”の例です。"
-
-    # Case 3: 検索はダメだが回答は正しい（人間判断が必要なケース）
-    elif hallucination is True and generated and all(v is False for v in detail.values()):
+    elif selected_sample.startswith("Case 3"):
         case_label = "Case 3: 検索はダメだが回答は正しい（人間判断が必要なケース）"
-        desc = "docs が取得できず hallucination=True だが、回答自体は一般的に正しい可能性があるケースです。"
-
-    # Case 4: 一部だけ満たしているケース（部分OK）
-    elif all_ok is False and detail and any(detail.values()):
+        desc = "docs が取得できず hallucination=True だが、回答自体は一般的に正しい可能性があるケースです（READMEのCase 3）。"
+    elif selected_sample.startswith("Case 4"):
         case_label = "Case 4: 一部だけ満たしているケース（部分OK）"
         desc = "必須キーワードの一部のみを満たしており、どこが不足しているかを detail から確認できます。"
-
-    # Case 5: 長くてそれっぽいが怪しい回答（微妙ケース）
-    elif all_ok and hallucination is True:
+    elif selected_sample.startswith("Case 5"):
         case_label = "Case 5: 長くてそれっぽいが怪しい回答（微妙ケース）"
-        desc = "キーワード的には条件を満たしていても、出典状況などから hallucination=True となる例です。"
+        desc = "キーワード的には条件を満たしていても、回答の質や出典状況によっては hallucination=true となり得る例です。"
+
+    # サンプル未選択時や任意入力時は、シグナルから簡易分類（参考程度）
+    if case_label is None:
+        # Case 1: 正しい回答（理想ケース）
+        if all_ok and hallucination is False:
+            case_label = "Case 1: 正しい回答（理想ケース）"
+            desc = "RAGが正しく機能すると、必須キーワードを全て満たし、hallucination も False になります。"
+
+        # Case 2: 明確に間違った回答（NGケース）
+        elif all_ok is False and hallucination is True and all(v is False for v in detail.values()):
+            case_label = "Case 2: 明確に間違った回答（NGケース）"
+            desc = "must_include を全く満たしておらず、hallucination も True となる“ダメな回答”の例です。"
+
+        # Case 3: 検索はダメだが回答は正しい（人間判断が必要なケース）
+        elif hallucination is True and generated and all(v is False for v in detail.values()):
+            case_label = "Case 3: 検索はダメだが回答は正しい（人間判断が必要なケース）"
+            desc = "docs が取得できず hallucination=True だが、回答自体は一般的に正しい可能性があるケースです。"
+
+        # Case 4: 一部だけ満たしているケース（部分OK）
+        elif all_ok is False and detail and any(detail.values()):
+            case_label = "Case 4: 一部だけ満たしているケース（部分OK）"
+            desc = "必須キーワードの一部のみを満たしており、どこが不足しているかを detail から確認できます。"
+
+        # Case 5: 長くてそれっぽいが怪しい回答（微妙ケース）
+        elif all_ok and hallucination is True:
+            case_label = "Case 5: 長くてそれっぽいが怪しい回答（微妙ケース）"
+            desc = "キーワード的には条件を満たしていても、出典状況などから hallucination=True となる例です。"
 
     if case_label:
         st.write("### 解釈（Evaluation Scenario）")

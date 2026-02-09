@@ -84,6 +84,8 @@ gcloud run deploy rag-public \
 APIデモ：
 - `public_api.py`（FastAPI）
 
+補足：現在は既存の `rag-template-prod` と同一プロジェクト内に同居させていますが、将来的には評価・検証専用の GCP プロジェクトとして分離する想定です。
+
 ---
 
 ## 📁 リポジトリ構成
