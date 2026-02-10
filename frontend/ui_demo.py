@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # ★ここは実際のCloud Run APIのURLに置き換え
-API_URL = "https://industry-rag-template-api-873508214410.asia-northeast1.run.app"
+API_URL = "https://industry-rag-template-api-287252646718.asia-northeast1.run.app"
 
 st.title("Industry RAG Demo")
 st.title("🔥 Industry RAG Demo (DEPLOY 2026-02-09 )")
