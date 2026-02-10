@@ -60,6 +60,20 @@ if st.button("送信"):
     )
     st.write(res.json())
 
+if st.button("Geminiで回答を試す"):
+    res = requests.post(
+        f"{API_URL}/gemini_answer",
+        json={"question": question},
+        timeout=60,
+    )
+    st.write("### Gemini応答")
+    # API側は {"generated": text} を返すシンプルな構造
+    try:
+        data = res.json()
+        st.write(data.get("generated"))
+    except Exception:
+        st.write("[Gemini API 呼び出しでJSON以外のレスポンスが返されました]")
+
 if st.button("評価"):
     must_include = [s.strip() for s in must_include_text.split(",") if s.strip()]
     res = requests.post(
