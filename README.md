@@ -86,6 +86,8 @@ APIデモ：
 
 補足：現在は既存の `rag-template-prod` と同一プロジェクト内に同居させていますが、将来的には評価・検証専用の GCP プロジェクトとして分離する想定です。
 
+なお本運用（private版）では、すでに OpenAI API ベースで RAG + 評価の動作検証を行っており、本テンプレートの構成は「モデルプロバイダ非依存」で設計しています。Gemini 連携（/gemini_answer）はハッカソンのレギュレーションに合わせて GCP 側に実装したものであり、実運用では OpenAI API から Gemini への置き換え（または併用）が容易にできることを意図しています。
+
 ---
 
 ## 📁 リポジトリ構成
@@ -182,6 +184,8 @@ public_api.py               # FastAPI（評価デモ用API）
 - `/evaluate` : その回答に対する **必須キーワード（must_include）** と **hallucination の簡易判定**
 
 までを API として分離しつつ、評価・運用の流れをデモできる構成になっています。
+
+補足：Gemini 連携（/gemini_answer）は Google AI Studio の Gemini API を利用しており、高負荷時には 503 `UNAVAILABLE` が返される場合があります。その場合は実際の運用同様、時間をおいて再試行することを想定しています。
 
 ---
 
