@@ -6,7 +6,8 @@ from typing import Optional
 import google.generativeai as genai
 
 
-_GEMINI_MODEL = "gemini-1.5-flash"
+# v1beta API で安定して利用可能なテキストモデルを指定
+_GEMINI_MODEL = "gemini-1.0-pro"
 
 
 def _get_api_key() -> Optional[str]:
